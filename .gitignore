@@ -1,3 +1,9 @@
+Example/WCAlertViewExample/.DS_Store
+
+Example/WCAlertViewExample/build/
+Example/WCAlertViewExample/WCAlertViewExample.xcodeproj/project.xcworkspace/xcuserdata/jesse.xcuserdatad/
+Example/WCAlertViewExample/WCAlertViewExample.xcodeproj/xcuserdata/jesse.xcuserdatad/
+
 # Xcode
 build/*
 *.pbxuser
