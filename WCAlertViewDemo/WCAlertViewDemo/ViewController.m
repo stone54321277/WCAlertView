@@ -26,7 +26,7 @@
 - (void)buttonPressed:(UIButton *)sender
 {
     WCAlertView *alert = [WCAlertView alertWithTitle:@"Alert Title"
-                                             message:@"This is a message body. This is a message body. This is a message body. This is a message body."
+                                             message:@"This is a message body. This is a message body. This is a message body. This is a message body. This is a message body. This is a message body. END."
                                             delegate:self
                                    cancelButtonTitle:@"Cancel"
                                   customizationBlock:^(WCAlertView *alertView) {
@@ -61,11 +61,6 @@
 - (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     NSLog(@"willDismissWithButtonIndex");
-}
-
-- (void)alertViewCancel:(UIAlertView *)alertView
-{
-    NSLog(@"alertViewCancel");
 }
 
 @end

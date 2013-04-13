@@ -4,6 +4,8 @@
 //  Created by Michał Zaborowski on 18/07/12.
 //  Copyright (c) 2012 Michał Zaborowski. All rights reserved.
 //
+//  https://github.com/m1entus/WCAlertView
+// 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
@@ -21,6 +23,13 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+//
+//  -----------------------------------------
+//  Edited and refactored by Jesse Squires on 13 April, 2013.
+//
+//  https://github.com/jessesquires/WCAlertView
+//
+//  http://hexedbits.com
 //
 
 #import <UIKit/UIKit.h>
@@ -66,7 +75,7 @@ typedef void(^CustomizationBlock)(WCAlertView *alertView);
 @property (strong, nonatomic) UIColor *innerFrameShadowColor;
 @property (strong, nonatomic) UIColor *innerFrameStrokeColor;
 
-@property (strong, nonatomic) UIColor *verticalLineColor;
+@property (strong, nonatomic) UIColor *horizontalLineColor;
 
 @property (strong, nonatomic) UIColor *hatchedLinesColor;
 @property (strong, nonatomic) UIColor *hatchedBackgroundColor;
@@ -77,7 +86,7 @@ typedef void(^CustomizationBlock)(WCAlertView *alertView);
 @property (assign, nonatomic) CGSize outerFrameShadowOffset;
 @property (assign, nonatomic) CGFloat outerFrameShadowBlur;
 
-#pragma mark - Defaults
+#pragma mark - Class defaults
 + (void)setDefaultStyle:(WCAlertViewStyle)style;
 + (void)setDefaultCustomiaztonBlock:(CustomizationBlock)block;
 
