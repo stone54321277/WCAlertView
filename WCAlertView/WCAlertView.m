@@ -67,7 +67,7 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
     WCAlertView *alertView = [[self alloc] initWithTitle:title
                                                   message:message
                                                  delegate:del
-                                        cancelButtonTitle:nil
+                                        cancelButtonTitle:cancelButtonTitle
                                         otherButtonTitles:nil];
     
     if(otherButtonTitles != nil) {
@@ -85,7 +85,6 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
     }
     
 	if(cancelButtonTitle) {
-        [alertView addButtonWithTitle:cancelButtonTitle];
 		alertView.cancelButtonIndex = [alertView numberOfButtons] - 1;
 	}
     
