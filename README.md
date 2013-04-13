@@ -12,7 +12,7 @@ Forked from [m1entus / WCAlertView](https://github.com/m1entus/WCAlertView) and 
 * Removed completion block in favor of inheriting `UIAlertViewDelegate` functionality directly from `UIAlertView`
 * A more 'proper' subclass of `UIAlertView`
 * Refactored to be much cleaner, better organized
-* Better demo project
+* New/improved demo project
 
 ## Installation
 
@@ -20,29 +20,31 @@ Forked from [m1entus / WCAlertView](https://github.com/m1entus/WCAlertView) and 
 
     pod `WCAlertView`
 
-### From source
+### From Source
 
 * Drag the `WCAlertView/` folder to your project (make sure you copy all files/folders)
 * `#import "WCAlertView.h"`
 
 ## How To Use
 
-* Use provided WCAlertViewStyle or customize your own
-    * WCAlertViewStyleDefault
-    * WCAlertViewStyleWhite
-    * WCAlertViewStyleWhiteHatched
-    * WCAlertViewStyleBlack
-    * WCAlertViewStyleBlackHatched
-    * WCAlertViewStyleViolet
-    * WCAlertViewStyleVioletHatched
-    * WCAlertViewStyleCustomizationBlock
+Use provided WCAlertViewStyle or customize your own
 
-* Set default style or customization for all `WCAlertView` with the following class methods
-    * `+ (void)setDefaultStyle:(WCAlertViewStyle)style`
-    * `+ (void)setDefaultCustomiaztonBlock:(CustomizationBlock)block`
-    * See appearance methods in `WCAlertView.m` for examples of how to customize (e.g. `- (void)violetAlertHetched:(BOOL)hatched`)
+* `WCAlertViewStyleDefault`
+* `WCAlertViewStyleWhite`
+* `WCAlertViewStyleWhiteHatched`
+* `WCAlertViewStyleBlack`
+* `WCAlertViewStyleBlackHatched`
+* `WCAlertViewStyleViolet`
+* `WCAlertViewStyleVioletHatched`
+* `WCAlertViewStyleCustomizationBlock`
 
-* Show an alert:
+Set default style or customization for all `WCAlertView` with the following class methods
+
+* `+ (void)setDefaultStyle:(WCAlertViewStyle)style`
+* `+ (void)setDefaultCustomiaztonBlock:(CustomizationBlock)block`
+* See appearance methods in `WCAlertView.m` for examples of how to customize (e.g. `- (void)violetAlertHetched:(BOOL)hatched`)
+
+Show an alert:
 
 ``` objective-c
 
@@ -61,7 +63,7 @@ Forked from [m1entus / WCAlertView](https://github.com/m1entus/WCAlertView) and 
 
 ````
 
-* Implement the [UIAlertViewDelegate Protocol](http://developer.apple.com/library/ios/#documentation/uikit/reference/UIAlertViewDelegate_Protocol/UIAlertViewDelegate/UIAlertViewDelegate.html) methods
+Implement the [UIAlertViewDelegate Protocol](http://developer.apple.com/library/ios/#documentation/uikit/reference/UIAlertViewDelegate_Protocol/UIAlertViewDelegate/UIAlertViewDelegate.html) methods
 
 **See the included demo project `WCAlertViewDemo.xcodeproj`**
 
