@@ -1,6 +1,5 @@
 //
 //  WCAlertView.h
-//  WCAlertView
 //
 //  Created by Michał Zaborowski on 18/07/12.
 //  Copyright (c) 2012 Michał Zaborowski. All rights reserved.
@@ -22,93 +21,72 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+//
 
 #import <UIKit/UIKit.h>
 
 @class WCAlertView;
 
-typedef NS_ENUM(NSInteger, WCAlertViewStyle)
-{
+typedef enum {
     WCAlertViewStyleDefault = 0,
-    
     WCAlertViewStyleWhite,
     WCAlertViewStyleWhiteHatched,
     WCAlertViewStyleBlack,
     WCAlertViewStyleBlackHatched,
     WCAlertViewStyleViolet,
     WCAlertViewStyleVioletHatched,
-    
     WCAlertViewStyleCustomizationBlock,
-};
+} WCAlertViewStyle;
+
 
 typedef void(^CustomizationBlock)(WCAlertView *alertView);
 
+
 @interface WCAlertView : UIAlertView
 
-/*
- *  Predefined alert styles
- */
-@property (nonatomic,assign) WCAlertViewStyle style;
+@property (assign, nonatomic) WCAlertViewStyle style;
 
-/*
- *  Title and message label styles
- */
-@property (nonatomic,strong) UIColor *labelTextColor;
-@property (nonatomic,strong) UIColor *labelShadowColor;
-@property (nonatomic,assign) CGSize   labelShadowOffset;
-@property (nonatomic,strong) UIFont  *titleFont;
-@property (nonatomic,strong) UIFont  *messageFont;
+@property (strong, nonatomic) UIColor *labelTextColor;
+@property (strong, nonatomic) UIColor *labelShadowColor;
+@property (assign, nonatomic) CGSize labelShadowOffset;
+@property (strong, nonatomic) UIFont *titleFont;
+@property (strong, nonatomic) UIFont *messageFont;
 
-/*
- *  Button styles
- */
-@property (nonatomic,strong) UIColor *buttonTextColor;
-@property (nonatomic,strong) UIFont  *buttonFont;
-@property (nonatomic,strong) UIColor *buttonShadowColor;
-@property (nonatomic,assign) CGSize   buttonShadowOffset;
-@property (nonatomic,assign) CGFloat  buttonShadowBlur;
+@property (strong, nonatomic) UIColor *buttonTextColor;
+@property (strong, nonatomic) UIFont *buttonFont;
+@property (strong, nonatomic) UIColor *buttonShadowColor;
+@property (assign, nonatomic) CGSize buttonShadowOffset;
+@property (assign, nonatomic) CGFloat buttonShadowBlur;
 
-/*
- *  Background gradient colors and locations
- */
-@property (nonatomic,strong) NSArray *gradientLocations;
-@property (nonatomic,strong) NSArray *gradientColors;
+@property (strong, nonatomic) NSArray *gradientLocations;
+@property (strong, nonatomic) NSArray *gradientColors;
 
-@property (nonatomic,assign) CGFloat cornerRadius;
-/*
- * Inner frame shadow (optional)
- * Stroke path to cover up pixialation on corners from clipping!
- */
-@property (nonatomic,strong) UIColor *innerFrameShadowColor;
-@property (nonatomic,strong) UIColor *innerFrameStrokeColor;
+@property (assign, nonatomic) CGFloat cornerRadius;
 
-/*
- * Hatched lines
- */
-@property (nonatomic,strong) UIColor *verticalLineColor;
+@property (strong, nonatomic) UIColor *innerFrameShadowColor;
+@property (strong, nonatomic) UIColor *innerFrameStrokeColor;
 
-@property (nonatomic,strong) UIColor *hatchedLinesColor;
-@property (nonatomic,strong) UIColor *hatchedBackgroundColor;
+@property (strong, nonatomic) UIColor *verticalLineColor;
 
-/*
- *  Outer frame color
- */
-@property (nonatomic,strong) UIColor *outerFrameColor;
-@property (nonatomic,assign) CGFloat  outerFrameLineWidth;
-@property (nonatomic,strong) UIColor *outerFrameShadowColor;
-@property (nonatomic,assign) CGSize   outerFrameShadowOffset;
-@property (nonatomic,assign) CGFloat  outerFrameShadowBlur;
+@property (strong, nonatomic) UIColor *hatchedLinesColor;
+@property (strong, nonatomic) UIColor *hatchedBackgroundColor;
 
-/*
- *  Setting default appearance for all WCAlertView's
- */
+@property (strong, nonatomic) UIColor *outerFrameColor;
+@property (assign, nonatomic) CGFloat outerFrameLineWidth;
+@property (strong, nonatomic) UIColor *outerFrameShadowColor;
+@property (assign, nonatomic) CGSize outerFrameShadowOffset;
+@property (assign, nonatomic) CGFloat outerFrameShadowBlur;
+
+#pragma mark - Defaults
 + (void)setDefaultStyle:(WCAlertViewStyle)style;
 + (void)setDefaultCustomiaztonBlock:(CustomizationBlock)block;
 
-
-+ (id)showAlertWithTitle:(NSString *)title message:(NSString *)message customizationBlock:(void (^)(WCAlertView *alertView))customization
-         completionBlock:(void (^)(NSUInteger buttonIndex, WCAlertView *alertView))block
-       cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
-
+#pragma mark - Initialization
++ (WCAlertView *)alertWithTitle:(NSString *)title
+                        message:(NSString *)message
+                       delegate:(id<UIAlertViewDelegate>)del
+              cancelButtonTitle:(NSString *)cancelButtonTitle
+             customizationBlock:(void (^)(WCAlertView *alertView))customizationBlock
+              otherButtonTitles:(NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
 
 @end

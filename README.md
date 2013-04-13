@@ -93,10 +93,6 @@ If you want full functionality, please use iOS 5 and above.
 
 WCAlertView is available under the MIT license. See the LICENSE file for more info.
 
-## ARC
-
-WCAlertView uses ARC.
-
 ## Credits
 
 Inspired by [Aaron Crabtree -  UIAlertView Custom Graphics](http://mobile.tutsplus.com) , borrowing some general approaches in drawing Alert View.

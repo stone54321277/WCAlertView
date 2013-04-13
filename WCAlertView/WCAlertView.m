@@ -1,6 +1,5 @@
 //
 //  WCAlertView.m
-//  WCAlertView
 //
 //  Created by Michał Zaborowski on 18/07/12.
 //  Copyright (c) 2012 Michał Zaborowski. All rights reserved.
@@ -22,38 +21,34 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
+//
 
 #import "WCAlertView.h"
-#import <QuartzCore/QuartzCore.h>
-#import <objc/runtime.h>
 #import <CoreGraphics/CoreGraphics.h>
 
-@interface WCAlertView () <UIAlertViewDelegate>
+@interface WCAlertView()
+
+- (void)defaultStyle;
+- (void)customizeAlertViewStyle:(WCAlertViewStyle)newStyle;
+- (void)violetAlertHetched:(BOOL)hatched;
+- (void)whiteAlertHatched:(BOOL)hatched;
+- (void)blackAlertHatched:(BOOL)hatched;
 
 @end
 
-@implementation WCAlertView
-@synthesize buttonShadowColor = _buttonShadowColor;
-@synthesize buttonShadowOffset = _buttonShadowOffset;
-@synthesize buttonTextColor = _buttonTextColor;
-@synthesize verticalLineColor = _verticalLineColor;
-@synthesize innerFrameShadowColor = _innerFrameShadowColor;
-@synthesize hatchedLinesColor = _hatchedLinesColor;
-@synthesize outerFrameColor = _outerFrameColor;
-@synthesize hatchedBackgroundColor = _hatchedBackgroundColor;
-@synthesize style = _style;
-@synthesize buttonShadowBlur = _buttonShadowBlur;
-@synthesize buttonFont = _buttonFont;
 
+
+@implementation WCAlertView
+
+@synthesize style;
 
 static WCAlertViewStyle kDefaultAlertStyle = WCAlertViewStyleDefault;
 static CustomizationBlock kDefauldCustomizationBlock = nil;
 
+#pragma mark - Defaults
 + (void)setDefaultStyle:(WCAlertViewStyle)style
 {
-    
     kDefaultAlertStyle = style;
-    
 }
 
 + (void)setDefaultCustomiaztonBlock:(CustomizationBlock)block
@@ -61,94 +56,86 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
     kDefauldCustomizationBlock = block;
 }
 
-+ (id)showAlertWithTitle:(NSString *)title message:(NSString *)message customizationBlock:(void (^)(WCAlertView *alertView))customization completionBlock:(void (^)(NSUInteger buttonIndex, WCAlertView *alertView))block cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ...
+#pragma mark - Initialization
++ (WCAlertView *)alertWithTitle:(NSString *)title
+                        message:(NSString *)message
+                       delegate:(id<UIAlertViewDelegate>)del
+              cancelButtonTitle:(NSString *)cancelButtonTitle
+             customizationBlock:(void (^)(WCAlertView *alertView))customizationBlock
+              otherButtonTitles:(NSString *)otherButtonTitles, ...
 {
-
-    WCAlertView *alertView = [[self alloc] initWithTitle:title message:message completionBlock:block cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
+    WCAlertView *alertView = [[self alloc] initWithTitle:title
+                                                  message:message
+                                                 delegate:del
+                                        cancelButtonTitle:nil
+                                        otherButtonTitles:nil];
     
-    if (otherButtonTitles != nil) {
+    if(otherButtonTitles != nil) {
         id eachObject;
         va_list argumentList;
         if (otherButtonTitles) {
             [alertView addButtonWithTitle:otherButtonTitles];
             va_start(argumentList, otherButtonTitles);
+            
             while ((eachObject = va_arg(argumentList, id))) {
                 [alertView addButtonWithTitle:eachObject];
             }
             va_end(argumentList);
         }
     }
-
-	if (cancelButtonTitle) {
-		[alertView addButtonWithTitle:cancelButtonTitle];
+    
+	if(cancelButtonTitle) {
+        [alertView addButtonWithTitle:cancelButtonTitle];
 		alertView.cancelButtonIndex = [alertView numberOfButtons] - 1;
 	}
     
-    if (customization) {
-        customization(alertView);
+    if(customizationBlock) {
+        customizationBlock(alertView);
     }
     
-    [alertView show];
-    
     return alertView;
-    
 }
 
-- (id)initWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ...
+#pragma mark - Alert view
+- (id)initWithTitle:(NSString *)title
+            message:(NSString *)message
+           delegate:(id)del
+  cancelButtonTitle:(NSString *)cancelButtonTitle
+  otherButtonTitles:(NSString *)otherButtonTitles, ...
 {
-    if (self = [super initWithTitle:title message:message delegate:delegate cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil]) {
-        
+    self = [super initWithTitle:title
+                        message:message
+                       delegate:del
+              cancelButtonTitle:cancelButtonTitle
+              otherButtonTitles:nil];
+    
+    if(self) {
         [self defaultStyle];
         
-        if (kDefauldCustomizationBlock) {
+        if(kDefauldCustomizationBlock) {
             self.style = WCAlertViewStyleCustomizationBlock;
         }
         
         va_list args;
         va_start(args, otherButtonTitles);
-        for (NSString *anOtherButtonTitle = otherButtonTitles; anOtherButtonTitle != nil; anOtherButtonTitle = va_arg(args, NSString*)) {
+        for(NSString *anOtherButtonTitle = otherButtonTitles; anOtherButtonTitle != nil; anOtherButtonTitle = va_arg(args, NSString*)) {
             [self addButtonWithTitle:anOtherButtonTitle];
         }
     }
+    
     return self;
 }
 
-
-- (id)initWithTitle:(NSString *)title message:(NSString *)message completionBlock:(void (^)(NSUInteger buttonIndex, WCAlertView *alertView))block cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
-	objc_setAssociatedObject(self, "blockCallback", [block copy], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-	
-	if (self = [self initWithTitle:title message:message delegate:self cancelButtonTitle:nil otherButtonTitles:nil]) {
-		
-		id eachObject;
-		va_list argumentList;
-		if (otherButtonTitles) {
-			[self addButtonWithTitle:otherButtonTitles];
-			va_start(argumentList, otherButtonTitles);
-			while ((eachObject = va_arg(argumentList, id))) {
-				[self addButtonWithTitle:eachObject];
-			}
-			va_end(argumentList);
-		}
-	}
-	return self;
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-	void (^block)(NSUInteger buttonIndex, UIAlertView *alertView) = objc_getAssociatedObject(self, "blockCallback");
-    if (block) {
-        block(buttonIndex, self);
-    }
-	
-}
-
-- (void)setStyle:(WCAlertViewStyle)style
+#pragma mark - Setters
+- (void)setStyle:(WCAlertViewStyle)newStyle
 {
-    if (style != _style) {
-        _style = style;
-        [self customizeAlertViewStyle:style];
+    if(style != newStyle) {
+        style = newStyle;
+        [self customizeAlertViewStyle:newStyle];
     }
 }
 
+#pragma mark - Appearance
 - (void)defaultStyle
 {
     self.buttonShadowBlur = 2.0f;
@@ -162,14 +149,11 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
     self.outerFrameShadowColor = [UIColor colorWithRed:0.0f/255.0f green:0.0f/255.0f blue:0.0f/255.0f alpha:1.0f];
     self.outerFrameShadowOffset = CGSizeMake(0.0f, 1.0f);
     self.style = kDefaultAlertStyle;
-    
 }
 
-- (void)customizeAlertViewStyle:(WCAlertViewStyle)style
+- (void)customizeAlertViewStyle:(WCAlertViewStyle)newStyle
 {
-    switch (style) {
-        case WCAlertViewStyleDefault:
-            break;
+    switch (newStyle) {
         case WCAlertViewStyleWhite:
             [self whiteAlertHatched:NO];
             break;
@@ -189,12 +173,12 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
             [self violetAlertHetched:YES];
             break;
         case WCAlertViewStyleCustomizationBlock:
-            if (kDefauldCustomizationBlock) {
+            if(kDefauldCustomizationBlock) {
                 kDefauldCustomizationBlock(self);
             }
             break;
-        default:
-            self.style = kDefaultAlertStyle;
+        case WCAlertViewStyleDefault:
+            default:
             break;
     }
 }
@@ -217,8 +201,7 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
     self.buttonShadowBlur = 2.0;
     self.buttonShadowColor = [UIColor colorWithRed:0.004 green:0.003 blue:0.006 alpha:1.000];
     
-    
-    if (hatched) {
+    if(hatched) {
         self.outerFrameColor = [UIColor colorWithRed:0.25f green:0.25f blue:0.41f alpha:1.00f];
         self.outerFrameShadowOffset = CGSizeMake(0.0, 0.0);
         self.outerFrameShadowBlur = 0.0;
@@ -244,7 +227,7 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
     self.buttonTextColor = [UIColor colorWithRed:0.11f green:0.08f blue:0.39f alpha:1.00f];
     self.buttonShadowColor = [UIColor whiteColor];
     
-    if (hatched) {
+    if(hatched) {
         self.verticalLineColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.1];
         self.hatchedLinesColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.1];
     }
@@ -266,116 +249,90 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
     self.buttonTextColor = [UIColor colorWithRed:210.0f/255.0f green:210.0f/255.0f blue:210.0f/255.0f alpha:1.0f];
     self.buttonShadowColor = [UIColor blackColor];
     
-    if (hatched) {
+    if(hatched) {
         self.verticalLineColor = [UIColor blackColor];
         self.innerFrameShadowColor = [UIColor blackColor];
         self.hatchedLinesColor = [UIColor blackColor];
     }
-    
 }
 
-#pragma mark -
-#pragma mark UIView Overrides
+#pragma mark - View layout
 - (void)layoutSubviews
 {
     [super layoutSubviews];
     
-    if (self.style) {
+    if(self.style) {
         for (UIView *subview in self.subviews){
             
-            //Find and hide UIImageView Containing Blue Background
-            if ([subview isMemberOfClass:[UIImageView class]]) {
-                
+            // Find and hide UIImageView Containing Blue Background
+            if([subview isMemberOfClass:[UIImageView class]]) {
                 CGRect rect = [subview frame];
-                
-                // Find and hide only background image view
-                // It prevent hiding UITextFiled for UIAlertViewStyleLoginAndPasswordInput
-                
-                if (rect.origin.x == 0 || rect.origin.y == 0) {
+                // prevent hiding UITextFiled for UIAlertViewStyleLoginAndPasswordInput
+                if(rect.origin.x == 0 || rect.origin.y == 0) {
                     subview.hidden = YES;
                 }
-                
             }
             
             //Find and get styles of UILabels
-            if ([subview isMemberOfClass:[UILabel class]]) {
+            if([subview isMemberOfClass:[UILabel class]]) {
                 UILabel *label = (UILabel*)subview;	
                 label.textColor = self.labelTextColor;
                 label.shadowColor = self.labelShadowColor;
                 label.shadowOffset = self.labelShadowOffset;
                 
-                if (   self.titleFont
+                if(self.titleFont
                     && [label.text isEqualToString:self.title]) {
                     label.font = self.titleFont;
                 }
                 
-                if (self.messageFont
+                if(self.messageFont
                     && [label.text isEqualToString:self.message]) {
                     label.font = self.messageFont;
                 }
             }
             
             // Hide button title labels
-            if ([subview isKindOfClass:[UIButton class]]) {
+            if([subview isKindOfClass:[UIButton class]]) {
                 UIButton *button = (UIButton *)subview;
                 button.titleLabel.alpha = 0;
             }
         }
     }
-    
 }
 
+#pragma mark - Drawing
 - (void)drawRect:(CGRect)rect 
 {
     [super drawRect:rect];
     
-    if (self.style) {
-        
-        /*
-         *  Current graphics context
-         */
-        
+    if(self.style) {
         CGContextRef context = UIGraphicsGetCurrentContext();
         
-        /*
-         *  Create base shape with rounded corners from bounds
-         */
-        
+        // Create base shape with rounded corners from bounds
         CGRect activeBounds = self.bounds;
         CGFloat cornerRadius = self.cornerRadius;
         CGFloat inset = 5.5f;
         CGFloat originX = activeBounds.origin.x + inset;
         CGFloat originY = activeBounds.origin.y + inset;
-        CGFloat width = activeBounds.size.width - (inset*2.0f);
-        CGFloat height = activeBounds.size.height - ((inset+2.0)*2.0f);
+        CGFloat width = activeBounds.size.width - (inset * 2.0f);
+        CGFloat height = activeBounds.size.height - ((inset + 2.0) * 2.0f);
         
         CGFloat buttonOffset = self.bounds.size.height - 50.5f;
         
         CGRect bPathFrame = CGRectMake(originX, originY, width, height);
         CGPathRef path = [UIBezierPath bezierPathWithRoundedRect:bPathFrame cornerRadius:cornerRadius].CGPath;
         
-        /*
-         *  Create base shape with fill and shadow
-         */
-        
+        // Create base shape with fill and shadow
         CGContextAddPath(context, path);
         CGContextSetFillColorWithColor(context, [UIColor colorWithRed:210.0f/255.0f green:210.0f/255.0f blue:210.0f/255.0f alpha:1.0f].CGColor);
         CGContextSetShadowWithColor(context, self.outerFrameShadowOffset, self.outerFrameShadowBlur, self.outerFrameShadowColor.CGColor);
         CGContextDrawPath(context, kCGPathFill);
         
-        /*
-         *  Clip state
-         */
-        
-        CGContextSaveGState(context); //Save Context State Before Clipping To "path"
+        CGContextSaveGState(context);
         CGContextAddPath(context, path);
         CGContextClip(context);
         
-        //////////////DRAW GRADIENT
-        /*
-         *  Draw grafient from gradientLocations
-         */
-        
+        // Draw grafient from gradientLocations
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
         size_t count = [self.gradientLocations count];
         
@@ -391,18 +348,18 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
             
             NSInteger startIndex = (idx * 4);
             
-            if ([color respondsToSelector:@selector(getRed:green:blue:alpha:)]) {
+            if([color respondsToSelector:@selector(getRed:green:blue:alpha:)]) {
                 [color getRed:&components[startIndex]
-                        green:&components[startIndex+1]
-                         blue:&components[startIndex+2]
-                        alpha:&components[startIndex+3]];
-            } else {
+                        green:&components[startIndex + 1]
+                         blue:&components[startIndex + 2]
+                        alpha:&components[startIndex + 3]];
+            }
+            else {
                 const CGFloat *colorComponent = CGColorGetComponents(color.CGColor);
-                
                 components[startIndex]   = colorComponent[0];
-                components[startIndex+1] = colorComponent[1];
-                components[startIndex+2] = colorComponent[2];
-                components[startIndex+3] = colorComponent[3];
+                components[startIndex + 1] = colorComponent[1];
+                components[startIndex + 2] = colorComponent[2];
+                components[startIndex + 3] = colorComponent[3];
             }
         }];
         
@@ -411,19 +368,19 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
         CGPoint startPoint = CGPointMake(activeBounds.size.width * 0.5f, 0.0f);
         CGPoint endPoint = CGPointMake(activeBounds.size.width * 0.5f, activeBounds.size.height);
         
-        CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
+        CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0.0f);
         CGColorSpaceRelease(colorSpace);
         CGGradientRelease(gradient);
         free(locations);
         free(components);
         
-        /*
-         *  Hatched background
-         */
-        
+        // Hatched background
         if (self.hatchedLinesColor || self.hatchedBackgroundColor) {
             CGContextSaveGState(context); //Save Context State Before Clipping "hatchPath"
-            CGRect hatchFrame = CGRectMake(0.0f, buttonOffset-15, activeBounds.size.width, (activeBounds.size.height - buttonOffset+1.0f)+15);
+            CGRect hatchFrame = CGRectMake(0.0f,
+                                           buttonOffset - 15.0f,
+                                           activeBounds.size.width,
+                                           (activeBounds.size.height - buttonOffset + 1.0f) + 15.0f);
             CGContextClipToRect(context, hatchFrame);
             
             if (self.hatchedBackgroundColor) {
@@ -464,13 +421,11 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
             CGContextRestoreGState(context); //Restore Last Context State Before Clipping "hatchPath"
         }
         
-        /*
-         * Draw vertical line
-         */
         
+        // Draw vertical line
         if (self.verticalLineColor) {
             CGMutablePathRef linePath = CGPathCreateMutable();
-            CGFloat linePathY = (buttonOffset - 1.0f) - 15;
+            CGFloat linePathY = (buttonOffset - 1.0f) - 15.0f;
             CGPathMoveToPoint(linePath, NULL, 0.0f, linePathY);
             CGPathAddLineToPoint(linePath, NULL, activeBounds.size.width, linePathY);
             CGContextAddPath(context, linePath);
@@ -483,10 +438,7 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
             CGContextRestoreGState(context); //Restore Context State After Drawing "linePath" Shadow
         }
         
-        /*
-         *  Stroke color for inner path
-         */
-        
+        // Stroke color for inner path
         if (self.innerFrameShadowColor || self.innerFrameStrokeColor) {
             CGContextAddPath(context, path);
             CGContextSetLineWidth(context, 3.0f);
@@ -501,10 +453,7 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
             CGContextDrawPath(context, kCGPathStroke);
         }
         
-        /*
-         * Stroke path to cover up pixialation on corners from clipping
-         */
-        
+        // Stroke path to cover up pixialation on corners from clipping
         CGContextRestoreGState(context); //Restore First Context State Before Clipping "path"
         CGContextAddPath(context, path);
         CGContextSetLineWidth(context, self.outerFrameLineWidth);
@@ -512,47 +461,43 @@ static CustomizationBlock kDefauldCustomizationBlock = nil;
         CGContextSetShadowWithColor(context, CGSizeMake(0.0f, 0.0f), 0.0f, [UIColor colorWithRed:0.0f/255.0f green:0.0f/255.0f blue:0.0f/255.0f alpha:0.1f].CGColor);
         CGContextDrawPath(context, kCGPathStroke);
         
-        /*
-         *  Drawing button labels
-         */
-        
+        // Drawing button labels
         for (UIView *subview in self.subviews){
             
-            if ([subview isKindOfClass:[UIButton class]])
-            {
+            if ([subview isKindOfClass:[UIButton class]]) {
                 UIButton *button = (UIButton *)subview;
                 
                 CGContextSetTextDrawingMode(context, kCGTextFill);
                 CGContextSetFillColorWithColor(context, self.buttonTextColor.CGColor);
                 CGContextSetShadowWithColor(context, self.buttonShadowOffset, self.buttonShadowBlur, self.buttonShadowColor.CGColor);
                 
-                UIFont *buttonFont = button.titleLabel.font;
-
-                if (self.buttonFont)
-                    buttonFont = self.buttonFont;
+                UIFont *btnFont = button.titleLabel.font;
+                if(self.buttonFont)
+                    btnFont = self.buttonFont;
 
                 // Calculate the font size to make sure large text is rendered correctly
                 CGFloat neededFontSize;
-                [button.titleLabel.text sizeWithFont:buttonFont minFontSize:8.0 actualFontSize:&neededFontSize forWidth:button.frame.size.width-6 lineBreakMode:NSLineBreakByWordWrapping];
-                if (neededFontSize < buttonFont.pointSize){
-                    buttonFont = [UIFont fontWithName:buttonFont.fontName size:neededFontSize];
+                [button.titleLabel.text sizeWithFont:btnFont
+                                         minFontSize:8.0f
+                                      actualFontSize:&neededFontSize
+                                            forWidth:button.frame.size.width - 6.0f
+                                       lineBreakMode:NSLineBreakByWordWrapping];
+                
+                if (neededFontSize < btnFont.pointSize) {
+                    btnFont = [UIFont fontWithName:btnFont.fontName
+                                              size:neededFontSize];
                 }
 
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_6_0
-                
-                [button.titleLabel.text drawInRect:CGRectMake(button.frame.origin.x, button.frame.origin.y+10, button.frame.size.width, button.frame.size.height-10) withFont:buttonFont lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
-#else
-                [button.titleLabel.text drawInRect:CGRectMake(button.frame.origin.x, button.frame.origin.y+10, button.frame.size.width, button.frame.size.height-10) withFont:buttonFont lineBreakMode:NSLineBreakByTruncatingMiddle alignment:UITextAlignmentCenter];
-                
-#endif
-                
+                [button.titleLabel.text drawInRect:CGRectMake(button.frame.origin.x,
+                                                              button.frame.origin.y + 10.0f,
+                                                              button.frame.size.width,
+                                                              button.frame.size.height - 10.0f)
+                                          withFont:btnFont
+                                     lineBreakMode:NSLineBreakByWordWrapping
+                                         alignment:NSTextAlignmentCenter];
             }
-            
         }
     }
-
 }
 
 @end
-
