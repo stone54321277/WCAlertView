@@ -1,8 +1,8 @@
-Example/WCAlertViewExample/.DS_Store
+.DS_Store
 
-Example/WCAlertViewExample/build/
-Example/WCAlertViewExample/WCAlertViewExample.xcodeproj/project.xcworkspace/xcuserdata/jesse.xcuserdatad/
-Example/WCAlertViewExample/WCAlertViewExample.xcodeproj/xcuserdata/jesse.xcuserdatad/
+WCAlertViewExample/build/
+WCAlertViewExample/WCAlertViewExample.xcodeproj/project.xcworkspace/xcuserdata/jesse.xcuserdatad/
+WCAlertViewExample/WCAlertViewExample.xcodeproj/xcuserdata/jesse.xcuserdatad/
 
 # Xcode
 build/*
