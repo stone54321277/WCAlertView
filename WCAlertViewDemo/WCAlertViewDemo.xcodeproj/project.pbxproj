@@ -59,6 +59,7 @@
 		8857FC051718DF21001C200D = {
 			isa = PBXGroup;
 			children = (
+				8857FC371718E057001C200D /* WCAlertView */,
 				8857FC171718DF22001C200D /* WCAlertViewDemo */,
 				8857FC101718DF21001C200D /* Frameworks */,
 				8857FC0F1718DF21001C200D /* Products */,
@@ -86,7 +87,6 @@
 		8857FC171718DF22001C200D /* WCAlertViewDemo */ = {
 			isa = PBXGroup;
 			children = (
-				8857FC371718E057001C200D /* WCAlertView */,
 				8857FC201718DF22001C200D /* AppDelegate.h */,
 				8857FC211718DF22001C200D /* AppDelegate.m */,
 				8857FC291718DF22001C200D /* MainStoryboard.storyboard */,
@@ -118,7 +118,7 @@
 				8857FC391718E057001C200D /* WCAlertView.m */,
 			);
 			name = WCAlertView;
-			path = ../../WCAlertView;
+			path = ../WCAlertView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
