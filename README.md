@@ -2,99 +2,88 @@
 
 A highly customizable subclass of UIAlertView.
 
-[![](https://raw.github.com/m1entus/WCAlertView/master/Screens/1thumb.png)](https://raw.github.com/m1entus/WCAlertView/master/Screens/1.png)
-[![](https://raw.github.com/m1entus/WCAlertView/master/Screens/2thumb.png)](https://raw.github.com/m1entus/WCAlertView/master/Screens/2.png)
-[![](https://raw.github.com/m1entus/WCAlertView/master/Screens/3thumb.png)](https://raw.github.com/m1entus/WCAlertView/master/Screens/3.png)
-[![](https://raw.github.com/m1entus/WCAlertView/master/Screens/4thumb.png)](https://raw.github.com/m1entus/WCAlertView/master/Screens/4.png)
+Forked from [m1entus / WCAlertView](https://github.com/m1entus/WCAlertView) and refactored.
 
-[![](https://raw.github.com/m1entus/WCAlertView/master/Screens/5thumb.png)](https://raw.github.com/m1entus/WCAlertView/master/Screens/5.png)
-[![](https://raw.github.com/m1entus/WCAlertView/master/Screens/6thumb.png)](https://raw.github.com/m1entus/WCAlertView/master/Screens/6.png)
-[![](https://raw.github.com/m1entus/WCAlertView/master/Screens/7thumb.png)](https://raw.github.com/m1entus/WCAlertView/master/Screens/7.png)
-[![](https://raw.github.com/m1entus/WCAlertView/master/Screens/8thumb.png)](https://raw.github.com/m1entus/WCAlertView/master/Screens/8.png)
+![WCAlertView Screenshot 1][img1] &nbsp;&nbsp;&nbsp;&nbsp; ![WCAlertView Screenshot 2][img2]
+
+### Notable changes
+
+* iOS 6.0+
+* Removed completion block in favor of inheriting `UIAlertViewDelegate` functionality directly from `UIAlertView`
+* A more 'proper' subclass of `UIAlertView`
+* Refactored to be much cleaner, better organized
+* Better demo project
+
+## Installation
+
+### From [CocoaPods](http://www.cocoapods.org)
+
+    pod `WCAlertView`
+
+### From source
+
+* Drag the `WCAlertView/` folder to your project (make sure you copy all files/folders)
+* `#import "WCAlertView.h"`
 
 ## How To Use
 
-There is couple of predefined styles, you can use them, or write you own styles.
+* Use provided WCAlertViewStyle or customize your own
+    * WCAlertViewStyleDefault
+    * WCAlertViewStyleWhite
+    * WCAlertViewStyleWhiteHatched
+    * WCAlertViewStyleBlack
+    * WCAlertViewStyleBlackHatched
+    * WCAlertViewStyleViolet
+    * WCAlertViewStyleVioletHatched
+    * WCAlertViewStyleCustomizationBlock
 
-WCAlertView support blocks.
+* Set default style or customization for all `WCAlertView` with the following class methods
+    * `+ (void)setDefaultStyle:(WCAlertViewStyle)style`
+    * `+ (void)setDefaultCustomiaztonBlock:(CustomizationBlock)block`
+    * See appearance methods in `WCAlertView.m` for examples of how to customize (e.g. `- (void)violetAlertHetched:(BOOL)hatched`)
 
-You can also set deafault appearance for all alert views:
-
-``` objective-c
-[WCAlertView setDefaultStyle:WCAlertViewStyleWhite];
-```
-
-Set default appearnce block for all WCAlertViews inside AppDelegate (similar to UIAppearance proxy)
-
-``` objective-c
-[WCAlertView setDefaultCustomiaztonBlock:^(WCAlertView *alertView) {
-        alertView.labelTextColor = [UIColor colorWithRed:0.11f green:0.08f blue:0.39f alpha:1.00f];
-        alertView.labelShadowColor = [UIColor whiteColor];
-        
-        UIColor *topGradient = [UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:1.0f];
-        UIColor *middleGradient = [UIColor colorWithRed:0.93f green:0.94f blue:0.96f alpha:1.0f];
-        UIColor *bottomGradient = [UIColor colorWithRed:0.89f green:0.89f blue:0.92f alpha:1.00f];
-        alertView.gradientColors = @[topGradient,middleGradient,bottomGradient];
-        
-        alertView.outerFrameColor = [UIColor colorWithRed:250.0f/255.0f green:250.0f/255.0f blue:250.0f/255.0f alpha:1.0f];
-        
-        alertView.buttonTextColor = [UIColor colorWithRed:0.11f green:0.08f blue:0.39f alpha:1.00f];
-        alertView.buttonShadowColor = [UIColor whiteColor];
-}];
-```
-
-If you want to use UITextField for password or plain inputtext, use UIAlertViewStyle.
+* Show an alert:
 
 ``` objective-c
-[WCAlertView showAlertWithTitle:@"Some title" message:@"Custom message" customizationBlock:^(WCAlertView *alertView) {
-        
-        alertView.alertViewStyle = UIAlertViewStyleSecureTextInput;
-        
-    } completionBlock:^(NSUInteger buttonIndex, WCAlertView *alertView) {
 
-    } cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
-```
-
-How to use:
-
-``` objective-c
-[WCAlertView showAlertWithTitle:@"Custom AlertView Title" 
-					    message:@"You can do a lot of additional setup using WCAlertView." 
-					    customizationBlock:^(WCAlertView *alertView) {
-					    
-        					alertView.style = WCAlertViewStyleVioletHatched;
-        					
-    } completionBlock:^(NSUInteger buttonIndex, WCAlertView *alertView) {
-        
-    } cancelButtonTitle:@"Cancel" otherButtonTitles:@"Okay",nil];
-```
-
-``` objective-c
-WCAlertView *alert = [[WCAlertView alloc] initWithTitle:@"Custom AlertView Title" 
-												message:@"You can do a lot of additional setup using WCAlertView." 
-											   delegate:nil cancelButtonTitle:@"Cancel" 
-											   otherButtonTitles:@"Okay", nil];
-											   
-    alert.style = WCAlertViewStyleVioletHatched;
+    WCAlertView *alert = [WCAlertView alertWithTitle:@"Alert Title"
+                                             message:@"This is a message body. This is a message body."
+                                            delegate:self
+                                   cancelButtonTitle:@"Cancel"
+                                  customizationBlock:^(WCAlertView *alertView) {
+                                      
+                                      // customize here
+                                      alertView.style = WCAlertViewStyleWhiteHatched
+                                  }
+                                   otherButtonTitles:@"Other1", @"Other2", nil];
     
     [alert show];
-```
 
-## Requirements
+````
 
-WCAlertView requires either iOS 4.3 and above.
+* Implement the [UIAlertViewDelegate Protocol](http://developer.apple.com/library/ios/#documentation/uikit/reference/UIAlertViewDelegate_Protocol/UIAlertViewDelegate/UIAlertViewDelegate.html) methods
 
-If you want full functionality, please use iOS 5 and above. 
+**See the included demo project `WCAlertViewDemo.xcodeproj`**
 
-## License
+## [MIT License](http://opensource.org/licenses/MIT)
 
-WCAlertView is available under the MIT license. See the LICENSE file for more info.
+Edited and refactored by Jesse Squires, April 2013.
+
+Copyright &copy; 2012 Michal Zaborowski
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Credits
 
-Inspired by [Aaron Crabtree -  UIAlertView Custom Graphics](http://mobile.tutsplus.com) , borrowing some general approaches in drawing Alert View.
+Forked from [Michal Zaborowski](http://github.com/m1entus) 
+
+Inspired by [Aaron Crabtree - UIAlertView Custom Graphics](http://mobile.tutsplus.com), borrowing some general approaches in drawing `UIAlertView`.
+
 Simple block extension got from [wannabegeek](http://github.com/wannabegeek/UIAlertViewExtentsions).
 
-## Contact
-
-[Michal Zaborowski](http://github.com/m1entus) 
+[img1]:https://raw.github.com/jessesquires/WCAlertView/master/Screenshots/screenshot1.png
+[img2]:https://raw.github.com/jessesquires/WCAlertView/master/Screenshots/screenshot2.png
