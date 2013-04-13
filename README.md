@@ -1,9 +1,6 @@
-WCAlertView
-==========
+#WCAlertView 2.0
 
-WCAlertView is a subclass from UIAlertView with possibility of customization.
-
-You can easly custom your UIAlertView.
+A highly customizable subclass of UIAlertView.
 
 [![](https://raw.github.com/m1entus/WCAlertView/master/Screens/1thumb.png)](https://raw.github.com/m1entus/WCAlertView/master/Screens/1.png)
 [![](https://raw.github.com/m1entus/WCAlertView/master/Screens/2thumb.png)](https://raw.github.com/m1entus/WCAlertView/master/Screens/2.png)
